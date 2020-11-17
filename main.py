@@ -16,7 +16,7 @@ my_tok = spacy.load('en')
 def spacy_tok(x):
     return [tok.text for tok in my_tok.tokenizer(x)]
 TEXT = data.Field(lower=True, tokenize=spacy_tok)
-
+ 
 train, valid, test = WikiText2.splits(TEXT) # loading custom datasets requires passing in the field, but nothing else.
 TEXT.build_vocab(train, vectors="glove.6B.200d")
 
