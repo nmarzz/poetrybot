@@ -322,4 +322,4 @@ print('| End of training | test loss {:5.2f} | test ppl {:8.2f}'.format(
 print('=' * 89)
 
 
-torch.save('model.pt',best_model)
+torch.save(best_model,'model.pt')
