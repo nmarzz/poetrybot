@@ -128,7 +128,7 @@ def train_epoch(epoch):
 
     print('Epoch: {}, Training Loss: {:.4f}, Validation Loss: {:.4f}'.format(epoch, epoch_loss, val_loss))
 
-
+ 
 n_epochs = 2
 for epoch in range(1, n_epochs + 1):
     train_epoch(epoch)
