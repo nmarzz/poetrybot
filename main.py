@@ -87,6 +87,7 @@ n_tokens = weight_matrix.size(0)
 from tqdm import tqdm
 
 def train_epoch(epoch):
+    model.train()
     """One epoch of a training loop"""
     epoch_loss = 0
     for batch in tqdm(train_iter):
