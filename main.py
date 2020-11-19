@@ -66,8 +66,8 @@ class RNNModel(nn.Module):
 
     def init_hidden(self, bsz):
         weight = next(self.parameters()).data
-        return (V(weight.new(self.nlayers, bsz, self.nhid).zero_().cuda()),
-                V(weight.new(self.nlayers, bsz, self.nhid).zero_()).cuda())
+        return (V(weight.new(self.nlayers, bsz, self.nhid).zero_().to(device)),
+                V(weight.new(self.nlayers, bsz, self.nhid).zero_()).to(device))
 
     def reset_history(self):
         self.hidden = tuple(V(v.data) for v in self.hidden)
@@ -79,3 +79,53 @@ model = RNNModel(weight_matrix.size(0), weight_matrix.size(1), 200, 1, BATCH_SIZ
 
 model.encoder.weight.data.copy_(weight_matrix)
 model.to(device)
+
+criterion = nn.CrossEntropyLoss()
+optimizer = optim.Adam(model.parameters(), lr=1e-3, betas=(0.7, 0.99))
+n_tokens = weight_matrix.size(0)
+
+from tqdm import tqdm
+
+def train_epoch(epoch):
+    """One epoch of a training loop"""
+    epoch_loss = 0
+    for batch in tqdm(train_iter):
+    # reset the hidden state or else the model will try to backpropagate to the
+    # beginning of the dataset, requiring lots of time and a lot of memory
+         model.reset_history()
+
+    optimizer.zero_grad()
+
+    text, targets = batch.text, batch.target
+    prediction = model(text)
+    # pytorch currently only supports cross entropy loss for inputs of 2 or 4 dimensions.
+    # we therefore flatten the predictions out across the batch axis so that it becomes
+    # shape (batch_size * sequence_length, n_tokens)
+    # in accordance to this, we reshape the targets to be
+    # shape (batch_size * sequence_length)
+    loss = criterion(prediction.view(-1, n_tokens), targets.view(-1))
+    loss.backward()
+
+    optimizer.step()
+
+    epoch_loss += loss.item() * prediction.size(0) * prediction.size(1)
+
+    epoch_loss /= len(train.examples[0].text)
+
+    # monitor the loss
+    val_loss = 0
+    model.eval()
+    for batch in test_iter:
+        model.reset_history()
+        text, targets = batch.text, batch.target
+        prediction = model(text)
+        loss = criterion(prediction.view(-1, n_tokens), targets.view(-1))
+        val_loss += loss.item() * text.size(0)
+    val_loss /= len(test.examples[0].text)
+
+    print('Epoch: {}, Training Loss: {:.4f}, Validation Loss: {:.4f}'.format(epoch, epoch_loss, val_loss))
+
+
+n_epochs = 2
+for epoch in range(1, n_epochs + 1):
+    train_epoch(epoch)
