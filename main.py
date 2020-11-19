@@ -25,8 +25,8 @@ def spacy_tok(x):
 TEXT = data.Field(tokenize=spacy_tok)
 
 # Define data and iterator
-train = torchtext.datasets.LanguageModelingDataset(path = 'poems.txt',text_field=TEXT,newline_eos =False )
-test = torchtext.datasets.LanguageModelingDataset(path = 'poems_test.txt',text_field=TEXT,newline_eos =False )
+train = torchtext.datasets.LanguageModelingDataset(path = 'poems.txt',text_field=TEXT,newline_eos =True )
+test = torchtext.datasets.LanguageModelingDataset(path = 'poems_test.txt',text_field=TEXT,newline_eos =True )
 
 TEXT.build_vocab(train, vectors="glove.6B.200d")
 
@@ -129,7 +129,7 @@ def train_epoch(epoch):
     print('Epoch: {}, Training Loss: {:.4f}, Validation Loss: {:.4f}'.format(epoch, epoch_loss, val_loss))
 
 
-n_epochs = 20
+n_epochs = 2
 for epoch in range(1, n_epochs + 1):
     train_epoch(epoch)
 
