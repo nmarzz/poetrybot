@@ -117,6 +117,7 @@ def train_epoch(epoch):
     val_loss = 0
     model.eval()
     for batch in test_iter:
+        model.eval()
         model.reset_history()
         text, targets = batch.text, batch.target
         prediction = model(text)
