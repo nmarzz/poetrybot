@@ -1,4 +1,5 @@
 import torch
+import numpy as np
 import torch.utils.data
 import torchtext
 from torchtext import data
