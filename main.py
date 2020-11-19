@@ -73,7 +73,7 @@ class RNNModel(nn.Module):
         self.hidden = tuple(V(v.data) for v in self.hidden)
 
 
-
+BATCH_SIZE = 32
 weight_matrix = TEXT.vocab.vectors
 model = RNNModel(weight_matrix.size(0), weight_matrix.size(1), 200, 1, BATCH_SIZE)
 
