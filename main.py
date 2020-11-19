@@ -128,7 +128,7 @@ def train_epoch(epoch):
     print('Epoch: {}, Training Loss: {:.4f}, Validation Loss: {:.4f}'.format(epoch, epoch_loss, val_loss))
 
 
-n_epochs = 25
+n_epochs = 5
 for epoch in range(1, n_epochs + 1):
     train_epoch(epoch)
 
@@ -146,6 +146,6 @@ def word_ids_to_sentence(id_tensor, vocab, join=None):
     else:
         return join.join(batch)
 
-
+b = next(iter(train_iter)); vars(b).keys()
 arrs = model(b.text).cpu().data.numpy()
 print(word_ids_to_sentence(np.argmax(arrs, axis=2), TEXT.vocab, join=' '))
