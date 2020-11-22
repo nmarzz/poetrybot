@@ -132,23 +132,38 @@ model = torch.load('model_wiki.pt',map_location = device)
 
 
 
-data, targets = get_batch(test_data, 0)
-src_mask = model.generate_square_subsequent_mask(bptt).to(device)
-if data.size(0) != bptt:
-    src_mask = model.generate_square_subsequent_mask(data.size(0)).to(device)
-print(data.shape)
-output = model(data,src_mask)
-print(output.shape)
-ntokens = len(TEXT.vocab.stoi)
-output_flat = output.view(-1, ntokens)
-#output_flat = torch.flatten(output)
-print(output_flat.shape)
-print(targets.shape)
-
-
-print(ntokens)
+# data, targets = get_batch(test_data, 0)
+# src_mask = model.generate_square_subsequent_mask(bptt).to(device)
+# if data.size(0) != bptt:
+#     src_mask = model.generate_square_subsequent_mask(data.size(0)).to(device)
+# print(data.shape)
+# output = model(data,src_mask)
+# print(output.shape)
+# ntokens = len(TEXT.vocab.stoi)
+# output_flat = output.view(-1, ntokens)
+# #output_flat = torch.flatten(output)
+# print(output_flat.shape)
+# print(targets.shape)
+#
+#
+# print(ntokens)
 # test_loss = evaluate(best_model, test_data)
 # print('=' * 89)
 # print('| End of training | test loss {:5.2f} | test ppl {:8.2f}'.format(
 #     test_loss, math.exp(test_loss)))
 # print('=' * 89)
+
+
+high = len(TEXT.vocab.stoi)
+seed = torch.randint(0,high,(35,))
+
+src_mask = model.generate_square_subsequent_mask(35).to(device)
+print(src_mask.shape)
+pred = model(seed,src_mask)
+
+for i in range(20):
+    print(torch.argmax(pred[i,i]))
+    print(TEXT.vocab.itos[torch.argmax(pred[i,i])])
+
+
+print(TEXT.vocab.stoi["hello"])

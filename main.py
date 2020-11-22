@@ -307,9 +307,7 @@ for epoch in range(1, epochs + 1):
                                      val_loss, math.exp(val_loss)))
     print('-' * 89)
 
-    if val_loss < best_val_loss:
-        best_val_loss = val_loss
-        best_model = model
+    best_model = model
 
     scheduler.step()
 
