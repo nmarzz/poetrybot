@@ -126,8 +126,8 @@ def get_batch(source, i):
     return data, target
 
 criterion = nn.CrossEntropyLoss()
-best_model = torch.load('model.pt',map_location = device)
-model = torch.load('model.pt',map_location = device)
+best_model = torch.load('model_wiki.pt',map_location = device)
+model = torch.load('model_wiki.pt',map_location = device)
 
 
 
