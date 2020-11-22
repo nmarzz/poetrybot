@@ -4,6 +4,7 @@ import torch
 from torchtext.data.utils import get_tokenizer
 from torch.nn import TransformerEncoder, TransformerEncoderLayer
 import torch.nn as nn
+import os
 
 class TransformerModel(nn.Module):
 
@@ -61,6 +62,11 @@ TEXT = torchtext.data.Field(tokenize=get_tokenizer("basic_english"),
                             init_token='<sos>',
                             eos_token='<eos>',
                             lower=True)
+
+data_dir = 'poems'
+# train_txt = torchtext.datasets.LanguageModelingDataset(path = os.path.join(data_dir,'poems_train.txt'),text_field=TEXT,newline_eos =False)
+# test_txt = torchtext.datasets.LanguageModelingDataset(path = os.path.join(data_dir,'poems_test.txt'),text_field=TEXT,newline_eos =False)
+# val_txt = torchtext.datasets.LanguageModelingDataset(path = os.path.join(data_dir,'poems_val.txt'),text_field=TEXT,newline_eos =False)
 train_txt, val_txt, test_txt = torchtext.datasets.WikiText2.splits(TEXT)
 TEXT.build_vocab(train_txt)
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
@@ -89,7 +95,7 @@ def evaluate(eval_model, data_source):
     src_mask = model.generate_square_subsequent_mask(bptt).to(device)
     with torch.no_grad():
         #for i in range(0, data_source.size(0) - 1, bptt):
-        for i in range(0,1, bptt):
+        for i in range(0,data_source.size(0) - 1, bptt):
             data, targets = get_batch(data_source, i)
             if data.size(0) != bptt:
                 src_mask = model.generate_square_subsequent_mask(data.size(0)).to(device)
@@ -125,8 +131,24 @@ model = torch.load('model.pt',map_location = device)
 
 
 
-test_loss = evaluate(best_model, test_data)
-print('=' * 89)
-print('| End of training | test loss {:5.2f} | test ppl {:8.2f}'.format(
-    test_loss, math.exp(test_loss)))
-print('=' * 89)
+
+data, targets = get_batch(test_data, 0)
+src_mask = model.generate_square_subsequent_mask(bptt).to(device)
+if data.size(0) != bptt:
+    src_mask = model.generate_square_subsequent_mask(data.size(0)).to(device)
+print(data.shape)
+output = model(data,src_mask)
+print(output.shape)
+ntokens = len(TEXT.vocab.stoi)
+output_flat = output.view(-1, ntokens)
+#output_flat = torch.flatten(output)
+print(output_flat.shape)
+print(targets.shape)
+
+
+
+# test_loss = evaluate(best_model, test_data)
+# print('=' * 89)
+# print('| End of training | test loss {:5.2f} | test ppl {:8.2f}'.format(
+#     test_loss, math.exp(test_loss)))
+# print('=' * 89)
