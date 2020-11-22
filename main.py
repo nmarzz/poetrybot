@@ -142,8 +142,8 @@ class PositionalEncoding(nn.Module):
 import torchtext
 from torchtext.data.utils import get_tokenizer
 TEXT = torchtext.data.Field(tokenize=get_tokenizer("basic_english"),
-                            init_token='<sos>',
-                            eos_token='<eos>',
+                            init_token='',
+                            eos_token='',
                             lower=True)
 train_txt, val_txt, test_txt = torchtext.datasets.WikiText2.splits(TEXT)
 TEXT.build_vocab(train_txt)

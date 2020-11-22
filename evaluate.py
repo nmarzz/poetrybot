@@ -88,12 +88,27 @@ def evaluate(eval_model, data_source):
     ntokens = len(TEXT.vocab.stoi)
     src_mask = model.generate_square_subsequent_mask(bptt).to(device)
     with torch.no_grad():
-        for i in range(0, data_source.size(0) - 1, bptt):
+        #for i in range(0, data_source.size(0) - 1, bptt):
+        for i in range(0,1, bptt):
             data, targets = get_batch(data_source, i)
             if data.size(0) != bptt:
                 src_mask = model.generate_square_subsequent_mask(data.size(0)).to(device)
             output = eval_model(data, src_mask)
             output_flat = output.view(-1, ntokens)
+
+            idx = 9
+            dstr = ""
+            for d in data[:,idx]:
+                dstr += TEXT.vocab.itos[d.int()] + " "
+
+            print(dstr)
+            print(TEXT.vocab.itos[targets[idx].int()])
+
+            print("Output number " + str(i) + "\n" + str(torch.max(output_flat)))
+
+
+
+            print("Predicted token " + str(i) + ": " + TEXT.vocab.itos[torch.max(output_flat).int()] + "\n")
             total_loss += len(data) * criterion(output_flat, targets).item()
     return total_loss / (len(data_source) - 1)
 
