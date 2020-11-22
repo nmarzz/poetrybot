@@ -146,7 +146,7 @@ print(output_flat.shape)
 print(targets.shape)
 
 
-
+print(ntokens)
 # test_loss = evaluate(best_model, test_data)
 # print('=' * 89)
 # print('| End of training | test loss {:5.2f} | test ppl {:8.2f}'.format(

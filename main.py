@@ -146,11 +146,11 @@ TEXT = torchtext.data.Field(tokenize=get_tokenizer("basic_english"),
                             init_token='',
                             eos_token='',
                             lower=True)
-#train_txt, val_txt, test_txt = torchtext.datasets.WikiText2.splits(TEXT)
+train_txt, val_txt, test_txt = torchtext.datasets.WikiText2.splits(TEXT)
 data_dir = 'poems'
-train_txt = torchtext.datasets.LanguageModelingDataset(path = os.path.join(data_dir,'poems_train.txt'),text_field=TEXT,newline_eos =False)
-test_txt = torchtext.datasets.LanguageModelingDataset(path = os.path.join(data_dir,'poems_test.txt'),text_field=TEXT,newline_eos =False)
-val_txt = torchtext.datasets.LanguageModelingDataset(path = os.path.join(data_dir,'poems_val.txt'),text_field=TEXT,newline_eos =False)
+# train_txt = torchtext.datasets.LanguageModelingDataset(path = os.path.join(data_dir,'poems_train.txt'),text_field=TEXT,newline_eos =False)
+# test_txt = torchtext.datasets.LanguageModelingDataset(path = os.path.join(data_dir,'poems_test.txt'),text_field=TEXT,newline_eos =False)
+# val_txt = torchtext.datasets.LanguageModelingDataset(path = os.path.join(data_dir,'poems_val.txt'),text_field=TEXT,newline_eos =False)
 TEXT.build_vocab(train_txt)
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
