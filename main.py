@@ -76,7 +76,7 @@ class TransformerModel(nn.Module):
         src = self.encoder(src) * math.sqrt(self.ninp)
         src = self.pos_encoder(src)
         output = self.transformer_encoder(src, src_mask)
-        output = self.decoder(output)
+        output = torch.softmax(self.decoder(output)/2)
         return output
 
 
@@ -251,10 +251,15 @@ def train():
     src_mask = model.generate_square_subsequent_mask(bptt).to(device)
     for batch, i in enumerate(range(0, train_data.size(0) - 1, bptt)):
         data, targets = get_batch(train_data, i)
+        print(data.shape)
         optimizer.zero_grad()
         if data.size(0) != bptt:
             src_mask = model.generate_square_subsequent_mask(data.size(0)).to(device)
         output = model(data, src_mask)
+        print(src_mask.shape)
+        print(output.shape)
+        print(targets.shape)
+        print('+' * 80)
         loss = criterion(output.view(-1, ntokens), targets)
         loss.backward()
         torch.nn.utils.clip_grad_norm_(model.parameters(), 0.5)
@@ -282,6 +287,7 @@ def evaluate(eval_model, data_source):
     with torch.no_grad():
         for i in range(0, data_source.size(0) - 1, bptt):
             data, targets = get_batch(data_source, i)
+            print(data.shape)
             if data.size(0) != bptt:
                 src_mask = model.generate_square_subsequent_mask(data.size(0)).to(device)
             output = eval_model(data, src_mask)
@@ -307,7 +313,8 @@ for epoch in range(1, epochs + 1):
                                      val_loss, math.exp(val_loss)))
     print('-' * 89)
 
-    best_model = model
+    if val_loss < best_val_loss:
+        best_model = model
 
     scheduler.step()
 
