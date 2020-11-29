@@ -250,7 +250,7 @@ def train():
     ntokens = len(TEXT.vocab.stoi)
     src_mask = model.generate_square_subsequent_mask(bptt).to(device)
     for batch, i in enumerate(range(0, train_data.size(0) - 1, bptt)):
-        data, targets = get_batch(train_data, i)        
+        data, targets = get_batch(train_data, i)
         optimizer.zero_grad()
         if data.size(0) != bptt:
             src_mask = model.generate_square_subsequent_mask(data.size(0)).to(device)
@@ -295,7 +295,7 @@ def evaluate(eval_model, data_source):
 # we've seen so far. Adjust the learning rate after each epoch.
 
 best_val_loss = float("inf")
-epochs = 20 # The number of epochs
+epochs = 8 # The number of epochs
 best_model = None
 
 for epoch in range(1, epochs + 1):
