@@ -38,7 +38,7 @@ in this tutorial) can be easily adapted/composed.
 # positions should be masked. To have the actual words, the output
 # of ``nn.TransformerEncoder`` model is sent to the final Linear
 # layer, which is followed by a log-Softmax function.
-#
+
 
 import math
 import torch
@@ -76,7 +76,7 @@ class TransformerModel(nn.Module):
         src = self.encoder(src) * math.sqrt(self.ninp)
         src = self.pos_encoder(src)
         output = self.transformer_encoder(src, src_mask)
-        output = torch.softmax(self.decoder(output)/2)
+        output = self.decoder(output)/2
         return output
 
 
